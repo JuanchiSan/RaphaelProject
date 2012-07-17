@@ -2,17 +2,13 @@ define(
   [
     'backbone',
     'raphael',
-    'hbs',
-    'jquery',
-    'text!templates/main.tpl.html'
+    'jquery'
   ],
-  function(Backbone, Raphael, Handlebars, $, tpl) {
+  function(Backbone, Raphael, $) {
     "use strict";
-    var MainView = Backbone.View.extend({
+    var PaperView = Backbone.View.extend({
 
-      el : 'body',
-
-      template : Handlebars.compile(tpl),
+      el : '#figure_container',
 
       events: {
       },
@@ -27,6 +23,6 @@ define(
 
     });
 
-    return MainView;
+    return PaperView;
   }
 );
