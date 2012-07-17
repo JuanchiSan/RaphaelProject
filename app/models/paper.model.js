@@ -4,9 +4,10 @@
 
 define(
   [
-  'backbone'
+  'backbone',
+  'raphael'
   ],
-  function(Backbone) {
+  function(Backbone, Raphael) {
     "use strict";
     var PaperModel = Backbone.Model.extend( {
 
@@ -25,6 +26,7 @@ define(
         // this.elementId = '#figure_container';
         console.log(this.sizeX);
         this.canvas = new Raphael('figure_container', 300, 600);
+        var circle = this.canvas.circle(10, 10, 5);
       }
 
     });

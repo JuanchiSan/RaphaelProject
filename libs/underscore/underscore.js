@@ -1,4 +1,4 @@
-//     Underscore.js 1.3.2
+//     Underscore.js 1.3.3
 //     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore is freely distributable under the MIT license.
 //     Portions of Underscore are inspired or borrowed from Prototype,
@@ -24,7 +24,8 @@
   var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
 
   // Create quick reference variables for speed access to core prototypes.
-  var slice            = ArrayProto.slice,
+  var push             = ArrayProto.push,
+      slice            = ArrayProto.slice,
       unshift          = ArrayProto.unshift,
       toString         = ObjProto.toString,
       hasOwnProperty   = ObjProto.hasOwnProperty;
@@ -48,11 +49,10 @@
   // Create a safe reference to the Underscore object for use below.
   var _ = function(obj) { return new wrapper(obj); };
 
-  // Export the Underscore object for **Node.js** and **"CommonJS"**, with
-  // backwards-compatibility for the old `require()` API. If we're not in
-  // CommonJS, add `_` to the global object via a string identifier for
-  // the Closure Compiler "advanced" mode. Registration as an AMD module
-  // via define() happens at the end of this file.
+  // Export the Underscore object for **Node.js**, with
+  // backwards-compatibility for the old `require()` API. If we're in
+  // the browser, add `_` as a global object via a string identifier,
+  // for Closure Compiler "advanced" mode.
   if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {
       exports = module.exports = _;
@@ -63,7 +63,7 @@
   }
 
   // Current version.
-  _.VERSION = '1.3.2';
+  _.VERSION = '1.3.3';
 
   // Collection Functions
   // --------------------
@@ -224,8 +224,12 @@
   };
 
   // Return the maximum element or (element-based computation).
+  // Can't optimize arrays of integers longer than 65,535 elements.
+  // See: https://bugs.webkit.org/show_bug.cgi?id=80797
   _.max = function(obj, iterator, context) {
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0]) return Math.max.apply(Math, obj);
+    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
+      return Math.max.apply(Math, obj);
+    }
     if (!iterator && _.isEmpty(obj)) return -Infinity;
     var result = {computed : -Infinity};
     each(obj, function(value, index, list) {
@@ -237,7 +241,9 @@
 
   // Return the minimum element (or element-based computation).
   _.min = function(obj, iterator, context) {
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0]) return Math.min.apply(Math, obj);
+    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
+      return Math.min.apply(Math, obj);
+    }
     if (!iterator && _.isEmpty(obj)) return Infinity;
     var result = {computed : Infinity};
     each(obj, function(value, index, list) {
@@ -286,14 +292,15 @@
     return result;
   };
 
-  // Use a comparator function to figure out at what index an object should
-  // be inserted so as to maintain order. Uses binary search.
+  // Use a comparator function to figure out the smallest index at which
+  // an object should be inserted so as to maintain order. Uses binary search.
   _.sortedIndex = function(array, obj, iterator) {
     iterator || (iterator = _.identity);
+    var value = iterator(obj);
     var low = 0, high = array.length;
     while (low < high) {
       var mid = (low + high) >> 1;
-      iterator(array[mid]) < iterator(obj) ? low = mid + 1 : high = mid;
+      iterator(array[mid]) < value ? low = mid + 1 : high = mid;
     }
     return low;
   };
@@ -322,7 +329,7 @@
     return (n != null) && !guard ? slice.call(array, 0, n) : array[0];
   };
 
-  // Returns everything but the last entry of the array. Especcialy useful on
+  // Returns everything but the last entry of the array. Especially useful on
   // the arguments object. Passing **n** will return all the values in
   // the array, excluding the last N. The **guard** check allows it to work with
   // `_.map`.
@@ -355,11 +362,16 @@
 
   // Return a completely flattened version of an array.
   _.flatten = function(array, shallow) {
-    return _.reduce(array, function(memo, value) {
-      if (_.isArray(value)) return memo.concat(shallow ? value : _.flatten(value));
-      memo[memo.length] = value;
-      return memo;
-    }, []);
+    return (function flatten(input, output) {
+      each(input, function(value) {
+        if (_.isArray(value)) {
+          shallow ? push.apply(output, value) : flatten(value, output);
+        } else {
+          output.push(value);
+        }
+      });
+      return output;
+    })(array, []);
   };
 
   // Return a version of the array that does not contain the specified value(s).
@@ -375,7 +387,7 @@
     var results = [];
     // The `isSorted` flag is irrelevant if the array only contains two elements.
     if (array.length < 3) isSorted = true;
-    _.reduce(initial, function (memo, value, index) {
+    _.reduce(initial, function(memo, value, index) {
       if (isSorted ? _.last(memo) !== value || !memo.length : !_.include(memo, value)) {
         memo.push(value);
         results.push(array[index]);
@@ -541,10 +553,10 @@
       if (throttling) {
         more = true;
       } else {
+        throttling = true;
         result = func.apply(context, args);
       }
       whenDone();
-      throttling = true;
       return result;
     };
   };
@@ -561,9 +573,10 @@
         timeout = null;
         if (!immediate) func.apply(context, args);
       };
-      if (immediate && !timeout) func.apply(context, args);
+      var callNow = immediate && !timeout;
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
     };
   };
 
@@ -679,7 +692,7 @@
     return obj;
   };
 
-  // Internal recursive comparison function.
+  // Internal recursive comparison function for `isEqual`.
   function eq(a, b, stack) {
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the Harmony `egal` proposal: http://wiki.ecmascript.org/doku.php?id=harmony:egal.
@@ -798,6 +811,8 @@
   };
 
   // Is a given variable an arguments object?
+  // Define a fallback version of the method in browsers (ahem, IE), where
+  // there isn't any inspectable "Arguments" type.
   _.isArguments = function(obj) {
     return toString.call(obj) == '[object Arguments]';
   };
@@ -858,7 +873,7 @@
     return obj === void 0;
   };
 
-  // Has own property?
+  // Does an object have the given "own" property?
   _.has = function(obj, key) {
     return hasOwnProperty.call(obj, key);
   };
@@ -879,13 +894,19 @@
   };
 
   // Run a function **n** times.
-  _.times = function (n, iterator, context) {
+  _.times = function(n, iterator, context) {
     for (var i = 0; i < n; i++) iterator.call(context, i);
   };
 
   // Escape a string for HTML interpolation.
   _.escape = function(string) {
-    return (''+string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g,'&#x2F;');
+    return (''+string)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
+      .replace(/\//g,'&#x2F;');
   };
 
   // If the value of the named property is a function then invoke it;
@@ -930,11 +951,11 @@
   var escapes = {
     '\\': '\\',
     "'": "'",
-    'r': '\r',
-    'n': '\n',
-    't': '\t',
-    'u2028': '\u2028',
-    'u2029': '\u2029'
+    r: '\r',
+    n: '\n',
+    t: '\t',
+    u2028: '\u2028',
+    u2029: '\u2029'
   };
 
   for (var p in escapes) escapes[escapes[p]] = p;
@@ -953,7 +974,7 @@
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
   _.template = function(text, data, settings) {
-    settings = _.extend(_.templateSettings, settings);
+    settings = _.defaults(settings || {}, _.templateSettings);
 
     // Compile the template source, taking care to escape characters that
     // cannot be included in a string literal and then unescape them in code
@@ -963,20 +984,20 @@
         return '\\' + escapes[match];
       })
       .replace(settings.escape || noMatch, function(match, code) {
-        return "'+\n_.escape(" + unescape(code) + ")+\n'";
+        return "'+\n((__t=(" + unescape(code) + "))==null?'':_.escape(__t))+\n'";
       })
       .replace(settings.interpolate || noMatch, function(match, code) {
-        return "'+\n(" + unescape(code) + ")+\n'";
+        return "'+\n((__t=(" + unescape(code) + "))==null?'':__t)+\n'";
       })
       .replace(settings.evaluate || noMatch, function(match, code) {
-        return "';\n" + unescape(code) + "\n;__p+='";
+        return "';\n" + unescape(code) + "\n__p+='";
       }) + "';\n";
 
     // If a variable is not specified, place data values in local scope.
     if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
 
-    source = "var __p='';" +
-      "var print=function(){__p+=Array.prototype.join.call(arguments, '')};\n" +
+    source = "var __t,__p='',__j=Array.prototype.join," +
+      "print=function(){__p+=__j.call(arguments,'')};\n" +
       source + "return __p;\n";
 
     var render = new Function(settings.variable || 'obj', '_', source);
@@ -985,10 +1006,8 @@
       return render.call(this, data, _);
     };
 
-    // Provide the compiled function source as a convenience for build time
-    // precompilation.
-    template.source = 'function(' + (settings.variable || 'obj') + '){\n' +
-      source + '}';
+    // Provide the compiled function source as a convenience for precompilation.
+    template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';
 
     return template;
   };
@@ -1030,11 +1049,10 @@
   each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
     var method = ArrayProto[name];
     wrapper.prototype[name] = function() {
-      var wrapped = this._wrapped;
-      method.apply(wrapped, arguments);
-      var length = wrapped.length;
-      if ((name == 'shift' || name == 'splice') && length === 0) delete wrapped[0];
-      return result(wrapped, this._chain);
+      var obj = this._wrapped;
+      method.apply(obj, arguments);
+      if ((name == 'shift' || name == 'splice') && obj.length === 0) delete obj[0];
+      return result(obj, this._chain);
     };
   });
 
@@ -1056,13 +1074,5 @@
   wrapper.prototype.value = function() {
     return this._wrapped;
   };
-
-  // AMD define happens at the end for compatibility with AMD loaders
-  // that don't enforce next-turn semantics on modules.
-  if (typeof define === 'function' && define.amd) {
-    define('underscore', function() {
-      return _;
-    });
-  }
 
 }).call(this);
