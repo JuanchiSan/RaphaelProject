@@ -5,6 +5,7 @@ define(
     'jquery'
   ],
   function(Backbone, Raphael, $) {
+    "use strict";
     var PaperView = Backbone.View.extend({
 
       el : '#figure_container',
