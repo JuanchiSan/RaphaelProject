@@ -10,18 +10,21 @@ define(
     "use strict";
     var PaperModel = Backbone.Model.extend( {
 
-      defaults:{
-        sizeX: 300,
-        sizeY: 600,
-        elementId: '#figure_container',
-        canvas: ""
-        //canvas: new Raphael('figure_container', this.sizeX, this.sizeY)
+      defaults: {
+          sizeX: 300,
+          sizeY: 600,
+          elementId: '#figure_container',
+          canvas: ""
       },
 
-      initialize : function(){
+      initialize : function() {
         console.log('raphaelX: ' + this.sizeX);
         console.log('raphael El: ' + this.elementId);
-        this.canvas = new Raphael(this.elementId, this.sizeX, this.sizeY);
+        // this.sizeX = 300;
+        // this.sizeY = 600;
+        // this.elementId = '#figure_container';
+        console.log(this.sizeX);
+        this.canvas = new Raphael('figure_container', 300, 600);
       }
 
     });

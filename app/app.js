@@ -12,8 +12,9 @@ define(
     return {
       init : function() {
         var mv = new MainView();
-        var pm = new PaperModel({elementId: '#figure_container'});
+        var pm = new PaperModel({elementId: 'figure_container'});
         var pv = new PaperView({model: pm});
+        console.log("----- " + pm.get("sizeX"));
       }
     };
   }
