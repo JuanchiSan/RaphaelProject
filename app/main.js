@@ -8,7 +8,12 @@ require.config({
     'underscore' : '../libs/underscore/underscore',
     'raphael' : '../libs/raphael/raphael-min',
     'text' : '../libs/require/text',
-    'hbs' : '../libs/hbs/handlebars-wrapper'
+    'hbs' : '../libs/hbs/handlebars-wrapper',
+
+    'mainView': 'views/main.view',
+    'paperView': 'views/paper.view',
+
+    'paperModel': 'models/paper.model'
   }
 });
 
