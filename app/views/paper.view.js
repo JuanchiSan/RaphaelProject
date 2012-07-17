@@ -1,10 +1,9 @@
 define(
   [
     'backbone',
-    'raphael',
     'jquery'
   ],
-  function(Backbone, Raphael, $) {
+  function(Backbone, $) {
     "use strict";
     var PaperView = Backbone.View.extend({
 
@@ -18,7 +17,6 @@ define(
       },
 
       render : function() {
-        this.$el.html( this.template( {title : 'Raphael test'} ) );
       }
 
     });

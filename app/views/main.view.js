@@ -1,12 +1,11 @@
 define(
   [
     'backbone',
-    'raphael',
     'hbs',
     'jquery',
     'text!templates/main.tpl.html'
   ],
-  function(Backbone, Raphael, Handlebars, $, tpl) {
+  function(Backbone, Handlebars, $, tpl) {
     "use strict";
     var MainView = Backbone.View.extend({
 

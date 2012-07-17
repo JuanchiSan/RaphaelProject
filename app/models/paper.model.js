@@ -4,14 +4,13 @@
 
 define(
   [
-  'backbone',
-  'raphael'
+  'backbone'
   ],
-  function(Backbone, Raphael) {
+  function(Backbone) {
     "use strict";
     var PaperModel = Backbone.Model.extend( {
 
-      defaults: {
+      defaults:{
         sizeX: 300,
         sizeY: 600,
         elementId: '#figure_container',
@@ -20,6 +19,8 @@ define(
       },
 
       initialize : function(){
+        console.log('raphaelX: ' + this.sizeX);
+        console.log('raphael El: ' + this.elementId);
         this.canvas = new Raphael(this.elementId, this.sizeX, this.sizeY);
       }
 
