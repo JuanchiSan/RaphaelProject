@@ -8,7 +8,6 @@ define([
         height: Config.boardHeight,
         width: Config.boardWidth
       }
-      
 
     });
     return BoardModel;

@@ -17,8 +17,8 @@ define(
       },
 
       initialize : function() {
-         = Drawer('Raphael')
-        this.el = 
+        this.paper = Raphael(this.el, Config.boardWidth, Config.boardHeight);
+        this.el = this.paper.canvas;
 
         // this.render();
       },
