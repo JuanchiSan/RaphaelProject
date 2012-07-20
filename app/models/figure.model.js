@@ -1,15 +1,12 @@
 define([
-  'backbone'
+  'backbone',
+  'config/cofig'
   ],
-  function(Backbone){
+  function(Backbone,Config){
     var FigureModel = Backbone.Model.extend({
-
-      x: function(){
-        return this.get('x');
-      },
-
-      y: function(){
-        return this.get('y');
+      defaults : {
+        x : Config.x,
+        y : Config.y
       }
 
     });

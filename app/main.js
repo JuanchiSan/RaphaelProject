@@ -6,9 +6,9 @@ require.config({
     //libreries
     backbone : '../libs/backbone/backbone.amd',
     backbonemin : '../libs/backbone/backbone-min',
-    jquery : '../libs/jquery/jquery-1.7.1.min',
-    underscore : '../libs/underscore/underscore.amd',
-    underscoremin : '../libs/underscore/underscore-min',
+    jquery : '../libs/jquery/jquery-1.7.2.min',
+    underscore : '../libs/underscore/underscore',
+    // underscoremin : '../libs/underscore/underscore-min',
     eve : '../libs/raphael/eve',
     raphael : '../libs/raphael/raphael.amd',
     raphaelcore : '../libs/raphael/raphael.core',
@@ -19,29 +19,29 @@ require.config({
     //routers
     approuter : 'router/approuter',
     //models
-    paperModel : 'models/paper.model',
+    boardModel : 'models/board.model',
+    figureModel : 'models/figure.model',
     //views
     mainView : 'views/main.view',
-    paperView : 'views/paper.view'
+    boardView : 'views/board.view'
   },
 
-  priority: ['jquery', 'raphael', 'underscore', 'backbone'],
-  //template
-  hbs : {
-    disableI18n : true,
-    templateExtension : 'hbs'
-  },
-  //Load jquery plugins
-  shim: {
-    'raphael' : {
-      deps : ['jquery'],
-      exports : 'raphael'
-    },
-    'backbone' : {
-      deps : ['underscore','jquery'],
-      exports : 'backbone'
-    }
-  }
+  // //template
+  // hbs : {
+  //   disableI18n : true,
+  //   templateExtension : 'hbs'
+  // },
+  // //Load jquery plugins
+  // shim: {
+  //   'raphael' : {
+  //     deps : ['jquery'],
+  //     exports : 'raphael'
+  //   },
+  //   'backbone' : {
+  //     deps : ['underscore','jquery'],
+  //     exports : 'backbone'
+  //   }
+  // }
 });
 
 require(
