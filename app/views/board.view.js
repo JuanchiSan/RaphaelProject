@@ -3,23 +3,20 @@ define(
     'jquery',
     'backbone',
     'raphael',
-    'figureModel'
+    'figureModel',
+    'config'
   ],
-  function($ ,Backbone, Raphael, FigureModel) {
+  function($ ,Backbone, Raphael, FigureModel, Config) {
     'use strict';
     var BoardView = Backbone.View.extend({
-
-      el : '#figure_container',
-      
 
       events: {
 
       },
+      paper : null,
 
       initialize : function() {
-        this.paper = Raphael(this.el, Config.boardWidth, Config.boardHeight);
-        this.el = this.paper.canvas;
-
+        this.paper = Raphael("figure_container", Config.boardWidth, Config.boardHeight);
         // this.render();
       },
 

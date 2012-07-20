@@ -21,9 +21,13 @@ require.config({
     //models
     boardModel : 'models/board.model',
     figureModel : 'models/figure.model',
+    circleModel : 'models/circle.model',
     //views
     mainView : 'views/main.view',
-    boardView : 'views/board.view'
+    boardView : 'views/board.view',
+    circleView : 'views/circle.view',
+    //config
+    config : 'config/config'
   },
 
   // //template
@@ -32,16 +36,16 @@ require.config({
   //   templateExtension : 'hbs'
   // },
   // //Load jquery plugins
-  // shim: {
-  //   'raphael' : {
-  //     deps : ['jquery'],
-  //     exports : 'raphael'
-  //   },
-  //   'backbone' : {
-  //     deps : ['underscore','jquery'],
-  //     exports : 'backbone'
-  //   }
-  // }
+   shim: {
+     'raphael' : {
+       deps : ['jquery'],
+       exports : 'raphael'
+     },
+     'backbone' : {
+       deps : ['underscore','jquery'],
+       exports : 'backbone'
+     }
+   }
 });
 
 require(

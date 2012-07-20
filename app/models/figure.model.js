@@ -1,6 +1,6 @@
 define([
   'backbone',
-  'config/cofig'
+  'config'
   ],
   function(Backbone,Config){
     var FigureModel = Backbone.Model.extend({

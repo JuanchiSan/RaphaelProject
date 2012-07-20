@@ -4,17 +4,24 @@
 define(
   [
     'mainView',
-    'paperView',
-    'paperModel'
+    'boardView',
+    'circleView',
+    'circleModel'
   ],
-  function( MainView, PaperView, PaperModel ) {
+  function( MainView, BoardView, CircleView, CircleModel) {
     'use strict';
     return {
       init : function() {
         var mv = new MainView();
-        var pm = new PaperModel({elementId: 'figure_container'});
-        var pv = new PaperView({model: pm});
-        console.log("----- " + pm.get("sizeX"));
+        var board = new BoardView();
+
+
+
+        //console.log(board.paper);
+
+        var circview = new CircleView(board);
+        console.log(circview.board);
+
       }
     };
   }

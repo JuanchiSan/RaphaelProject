@@ -6,7 +6,7 @@ define([
   function(Backbone, FigureModel, Config){
     var CircleModel = FigureModel.extend({
       defaults : {
-        radius : Config.circleRadius;
+        radius : Config.circleRadius
       }
 
     });
