@@ -5,32 +5,29 @@
 define(
   [
   'backbone',
-  'raphael'
+  'raphael',
+  'config'
   ],
-  function(Backbone, Raphael) {
+  function(Backbone, Raphael, Config) {
     "use strict";
     var PaperModel = Backbone.Model.extend( {
 
       defaults: {
-          sizeX: 300,
-          sizeY: 600,
-          elementId: '#figure_container',
-          canvas: ""
+        width: Config.boardWidht,
+        hight: Config.boardHight,
+        elementId: 'figure_container',
+        canvas: ""
       },
 
       initialize : function() {
-        console.log('raphaelX: ' + this.sizeX);
-        console.log('raphael El: ' + this.elementId);
-        // this.sizeX = 300;
-        // this.sizeY = 600;
+        this.width = Config.boardWidht;
+        this.hight = Config.boardHight;
         // this.elementId = '#figure_container';
-        console.log(this.sizeX);
-        this.canvas = new Raphael('figure_container', 300, 600);
-        var circle = this.canvas.circle(10, 10, 5);
+        this.canvas = new Raphael(10,10, this.width, this.hight);
       }
 
     });
 
-    return PaperModel;
+    return new PaperModel();
   }
 );

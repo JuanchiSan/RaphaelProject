@@ -1,12 +1,13 @@
 define([
   'backbone',
-  'models/figure.model'
+  'figureModel',
+  'config'
   ],
-  function(Backbone, FigureModel){
+  function(Backbone, FigureModel, Config){
     var CircleModel = FigureModel.extend({
 
-      radius: function () {
-        return this.get('radius');
+      defaults: {
+        radious: Config.radious
       }
 
     });

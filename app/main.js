@@ -20,9 +20,19 @@ require.config({
     approuter : 'router/approuter',
     //models
     paperModel : 'models/paper.model',
+    figureModel : 'models/figure.model',
+    circleModel : 'models/circle.model',
+    rectangleModel : 'models/rectangle.model',
+
     //views
     mainView : 'views/main.view',
-    paperView : 'views/paper.view'
+    figureView : 'views/figure.view',
+    paperView : 'views/paper.view',
+    circleView : 'views/circle.view',
+    rectangleView : 'views/rectangle.view',
+
+    //config file:
+    config: 'config/config'
   },
 
   priority: ['jquery', 'raphael', 'underscore', 'backbone'],
