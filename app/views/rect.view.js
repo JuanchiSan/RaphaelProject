@@ -9,7 +9,7 @@ define(
   ],
   function($ ,Backbone, Raphael, RectModel, FigureView) {
     'use strict';
-    var RectView = Backbone.View.extend({
+    var RectView = FigureView.extend({
 
       //el : '#figure_container',
 

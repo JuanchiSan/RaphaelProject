@@ -23,7 +23,6 @@ define(
         this.model = new CircleModel();
         this.model.set({'x' : 10, 'y' : 10, 'circleRadius' : 10});
         this.render(board);
-        //ver cuando cargo la collection de figures
       },
 
       render : function(board) {

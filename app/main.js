@@ -25,6 +25,7 @@ require.config({
     rectModel : 'models/rect.model',
     //views
     mainView : 'views/main.view',
+    editPanel : 'views/editPanel.view',
     boardView : 'views/board.view',
     circleView : 'views/circle.view',
     rectView : 'views/rect.view',
