@@ -6,9 +6,9 @@ define(
     'mainView',
     'boardView',
     'circleView',
-    'circleModel'
+    'rectView'
   ],
-  function( MainView, BoardView, CircleView, CircleModel) {
+  function( MainView, BoardView, CircleView, RectView) {
     'use strict';
     return {
       init : function() {
@@ -18,7 +18,7 @@ define(
 
 
         //console.log(board.paper);
-
+        var rectview = new RectView(board);
         var circview = new CircleView(board);
         console.log(circview.board);
 

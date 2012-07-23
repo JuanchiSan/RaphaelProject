@@ -4,6 +4,7 @@ define([
   'config'
   ],
   function(Backbone, FigureModel, Config){
+    'use strict';
     var RectModel = FigureModel.extend({
       defaults : {
         width : Config.rectWidth,

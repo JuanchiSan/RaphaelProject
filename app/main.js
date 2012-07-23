@@ -22,10 +22,12 @@ require.config({
     boardModel : 'models/board.model',
     figureModel : 'models/figure.model',
     circleModel : 'models/circle.model',
+    rectModel : 'models/rect.model',
     //views
     mainView : 'views/main.view',
     boardView : 'views/board.view',
     circleView : 'views/circle.view',
+    rectView : 'views/rect.view',
     //config
     config : 'config/config'
   },

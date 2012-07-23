@@ -13,6 +13,7 @@ define(
       events: {
 
       },
+      //esto esta bien??
       paper : null,
 
       initialize : function() {
