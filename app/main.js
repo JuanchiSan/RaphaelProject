@@ -28,6 +28,7 @@ require.config({
     boardView : 'views/board.view',
     circleView : 'views/circle.view',
     rectView : 'views/rect.view',
+    figureView : 'views/figure.view',
     //config
     config : 'config/config'
   },

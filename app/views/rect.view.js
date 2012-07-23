@@ -4,13 +4,14 @@ define(
     'backbone',
     'raphael',
     'rectModel',
+    'figureView',
     'config'
   ],
-  function($ ,Backbone, Raphael, RectModel) {
+  function($ ,Backbone, Raphael, RectModel, FigureView) {
     'use strict';
     var RectView = Backbone.View.extend({
 
-      el : '#figure_container',
+      //el : '#figure_container',
 
       model : RectModel,
 
@@ -27,12 +28,9 @@ define(
 
       render : function(board) {
         var rect = board.paper.rect(this.model.get('x'), this.model.get('y'), this.model.get('rectWidth'), this.model.get('rectHeight'), this.model.get('rectRadius'));
-      },
-
-      addfigure : function(figure){
-
+        this.el = rect.node;
+        this.$el = $(rect.node);
       }
-
     });
 
     return RectView;

@@ -4,13 +4,14 @@ define(
     'backbone',
     'raphael',
     'circleModel',
+    'figureView',
     'config'
   ],
-  function($ ,Backbone, Raphael, CircleModel) {
+  function($ ,Backbone, Raphael, CircleModel, FigureView) {
     'use strict';
-    var CircleView = Backbone.View.extend({
+    var CircleView = FigureView.extend({
 
-      el : '#figure_container',
+      //el : '#figure_container',
 
       model : CircleModel,
 
@@ -27,12 +28,10 @@ define(
 
       render : function(board) {
         var circle = board.paper.circle(this.model.get('x'), this.model.get('y'), this.model.get('circleRadius'));
-      },
-
-      addfigure : function(figure){
-
+        this.el = circle.node;
+        this.$el = $(circle.node);
+        circle.drag(this.dragstart, this.dragmove, this.dragup);
       }
-
     });
 
     return CircleView;

@@ -20,7 +20,6 @@ define(
         //console.log(board.paper);
         var rectview = new RectView(board);
         var circview = new CircleView(board);
-        console.log(circview.board);
 
       }
     };
