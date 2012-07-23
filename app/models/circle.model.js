@@ -6,8 +6,12 @@ define([
   function(Backbone, FigureModel, Config){
     var CircleModel = FigureModel.extend({
 
-      defaults: {
+      moredefaults: {
         radious: Config.radious
+      },
+
+      initialize: function() {
+        //this.set(this.moredefaults);
       }
 
     });

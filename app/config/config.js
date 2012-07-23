@@ -4,8 +4,8 @@ define( function() {
     width: 30,
     height: 30,
     radious: 30,
-    boardWidht: 800,
-    boardHight: 600
+    boardWidht: '100%',
+    boardHight: '600'
   };
 
 });

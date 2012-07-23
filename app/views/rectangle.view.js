@@ -3,69 +3,63 @@ define(
     'underscore',
     'backbone',
     'figureView',
-    'jquery',
-    'paperModel'
+    'jquery'
   ],
-  function(_, Backbone, FigureView, $, PaperModel) {
+  function(_, Backbone, FigureView, $) {
     "use strict";
     var RectangleView = FigureView.extend({
 
       events: {
-//        mouseover: "selected",
-        //mouseout: "notSelected",
-//        click: "shake"
+        'mousedown': 'select',
+        'mouseout': 'select',
+        'mouseup': 'shake',
+        'mouseover': 'selectAndChangeColor'
       },
 
-      initialize : function() {
-        _.bindAll(this, 'render', 'selected', 'shake', 'notSelected');
-        this.model.bind('change', this.render());
+      initialize : function(obj, paper) {
+        _.bindAll(this, 'render', 'generateGraphicElem', 'changeColor', 'notSelected', 'selectAndChangeColor');
+        this.model.bind('change', this.render);
 
-        this.paper = PaperModel.canvas;
-
-        this.element = this.paper.rect( this.model.get('x'),
-                                            this.model.get('y'),
-                                            this.model.get('width'),
-                                            this.model.get('height') );
-        this.element.drag( this.dragOps.move, this.dragOps.start, this.dragOps.up);
-
-        this.el = this.element.node;
-        this.$el = $(this.element.node);
-
+        this.paper = paper;
         this.render();
+        this.model.set({'graphicElem': this.graphicElem});
       },
 
-      render : function() {
-        if (this.element) {
-          this.element.attr( {fill: 'orange', stroke: '5'} );
-        }
+      generateGraphicElem : function() {
+        var graphicElem = this.paper.rect( this.model.get('x'),
+                                           this.model.get('y'),
+                                           this.model.get('width'),
+                                           this.model.get('height'),
+                                           5 );
+
+        graphicElem.attr( {'fill': this.model.get('color'),
+                           'stroke': this.model.get('stroke'),
+                           'stroke-width': this.model.get('stroke-width')} );
+
+        this.el = graphicElem.node;
+        this.$el = $(graphicElem.node);
+
+        return graphicElem;
       },
 
-      selected: function() {
+      selectAndChangeColor: function() {
+        this.select();
+        this.changeColor();
+      },
+
+      changeColor: function() {
         // show a high path or something...
         var r = Math.floor(Math.random()*100),
             g = Math.floor(Math.random()*100),
             b = Math.floor(Math.random()*100);
-        this.element.attr({fill: 'rgb(' + r + '%,' + g + '%,' + b + '%)'});
+        this.graphicElem.attr({fill: 'rgb(' + r + '%,' + g + '%,' + b + '%)'});
       },
 
       notSelected: function() {
         // var r = Math.floor(Math.random()*100),
         //     g = Math.floor(Math.random()*100),
         //     b = Math.floor(Math.random()*100);
-        // this.element.attr({fill: 'rgb(' + r + '%,' + g + '%,' + b + '%)'});
-      },
-
-      shake: function() {
-        var mult = Math.random() * 3;
-        var oldHeight = this.model.get('width');
-        var oldWidht = this.model.get('height');
-        var newHeight = oldHeight * mult;
-        this.element.animate({ transform:"", opacity: 0.5, stroke: 'none', width: newHeight, height: newHeight}, 200, "elastic",
-          function() {
-            this.animate( { transform:"", opacity: 1, stroke: '1', width: oldWidht, height: oldHeight}, 400, "elastic" );
-          }
-        );
-        //this.model.set({'width': newHeight});
+        // this.graphicElem.attr({fill: 'rgb(' + r + '%,' + g + '%,' + b + '%)'});
       }
 
     });

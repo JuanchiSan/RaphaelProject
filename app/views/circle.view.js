@@ -3,51 +3,62 @@ define(
     'underscore',
     'backbone',
     'figureView',
-    'jquery',
-    'paperModel'
+    'jquery'
   ],
-  function(_, Backbone, FigureView, $, PaperModel) {
+  function(_, Backbone, FigureView, $) {
     "use strict";
     var CircleView = FigureView.extend({
 
       events: {
-//        'click': 'selected'
+        'mouseover': 'select',
+        'mouseout': 'select',
+        'mouseup': 'shake'
       },
 
       /*
        * Paper and circle atts shuld be defined on creation...
        */
 
-      initialize : function() {
-        _.bindAll(this, 'render', 'selected');
+      initialize : function(obj, paper) {
+        _.bindAll(this, 'render', 'generateGraphicElem', 'shake');
         this.model.bind('change', this.render );
 
-        this.paper = PaperModel.canvas;
-
-        this.element = this.paper.circle( this.model.get('x'),
-                                          this.model.get('y'),
-                                          this.model.get('radious') );
-        this.element.drag( this.dragOps.move, this.dragOps.start, this.dragOps.up);
-
-        this.el = this.element.node;
-        this.$el = $(this.element.node);
-
+        this.paper = paper;
         this.render();
+
+        this.model.set({'graphicElem': this.graphicElem});
       },
 
-      render : function() {
-        if (this.element) {
-          this.element.attr( {fill: 'orange', stroke: '5'} );
-        }
+      generateGraphicElem : function() {
+        var graphicElem = this.paper.circle( this.model.get('x'),
+                                             this.model.get('y'),
+                                             this.model.get('radious') );
+
+        graphicElem.attr( {'fill': this.model.get('color'),
+                           'stroke': this.model.get('stroke'),
+                           'stroke-width': this.model.get('stroke-width')} );
+
+        return graphicElem;
       },
 
-      selected: function() {
-        // show a high path or something...
-        var r = Math.floor(Math.random()*100),
-            g = Math.floor(Math.random()*100),
-            b = Math.floor(Math.random()*100);
-        this.element.attr({fill: 'rgb(' + r + '%,' + g + '%,' + b + '%)'});
+
+      /*
+       * redefne shake cause circle has no width and height
+       */
+      shake: function() {
+        var mult = 1.2;//Math.random() * 3;
+        var oldRadius = this.model.get('radious');
+        var newRadius = oldRadius * mult;
+
+        this.graphicElem.animate( { transform:"", opacity: 0.5, r: newRadius}, 80, "<",
+          function() {
+            this.animate( { transform:"", opacity: 1, r: oldRadius}, 80, "elastic" );
+          }
+        );
+        //this.model.set({'width': newHeight});
       }
+
+
 
     });
 
