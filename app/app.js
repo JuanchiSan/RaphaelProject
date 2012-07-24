@@ -11,9 +11,12 @@ define(
     'rectangleModel',
     'rectangleView',
     'arcModel',
-    'arcView'
+    'arcView',
+    'composedFigModel',
+    'composedView'
   ],
-  function( MainView, PaperView, PaperModel, CircleModel, CircleView, RectangleModel, RectangleView, ArcModel, ArcView ) {
+  function( MainView, PaperView, PaperModel, CircleModel, CircleView, RectangleModel, RectangleView,
+    ArcModel, ArcView, ComposedFigModel, ComposedView ) {
     'use strict';
     return {
       init : function() {
@@ -47,6 +50,21 @@ define(
         var myArc4 = new ArcModel( {'from': a_circle3, 'to': a_circle2} );
         var myArc_view4 = new ArcView({'model': myArc4}, paper);
 
+
+
+        var c_circle = new CircleModel({x: '300', y: '400', radious: '20'});
+        var c_circle_view = new CircleView( {'model': c_circle}, paper );
+
+        var c_circle2 = new CircleModel({x: '350', y: '400', radious: '20'});
+        var c_circle_view2 = new CircleView( {'model': c_circle2}, paper );
+
+        var myComposedFig = new ComposedFigModel();
+        myComposedFig.addElement(c_circle);
+        myComposedFig.addElement(c_circle2);
+
+        var myComposedFig_view = new ComposedView({model: myComposedFig}, paper);
+        myComposedFig_view.addElement([{'model': c_circle, 'view': c_circle_view},
+                                       {'model': c_circle2, 'view': c_circle_view2}]);
         //a_rect.set({x: 300, y: 250});
       }
     };

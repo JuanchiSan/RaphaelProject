@@ -18,11 +18,14 @@ require.config({
     hbs : '../libs/hbs/handlebars-wrapper',
     //routers
     approuter : 'router/approuter',
+
     //models
     paperModel : 'models/paper.model',
     figureModel : 'models/figure.model',
     circleModel : 'models/circle.model',
     rectangleModel : 'models/rectangle.model',
+    arcModel: 'models/arc.model',
+    composedFigModel: 'models/composedfig.model',
 
     //views
     mainView : 'views/main.view',
@@ -30,6 +33,8 @@ require.config({
     paperView : 'views/paper.view',
     circleView : 'views/circle.view',
     rectangleView : 'views/rectangle.view',
+    arcView : 'views/arc.view',
+    composedView : 'views/composed.view',
 
     //config file:
     config: 'config/config'
