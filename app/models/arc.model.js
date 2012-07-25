@@ -17,5 +17,5 @@ define([
 
     });
     return ArcModel;
-   }
-);
+  }
+  );

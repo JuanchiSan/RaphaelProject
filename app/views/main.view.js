@@ -6,7 +6,7 @@ define(
     'text!templates/main.tpl.html'
   ],
   function(Backbone, Handlebars, $, tpl) {
-    "use strict";
+    'use strict';
     var MainView = Backbone.View.extend({
 
       el : 'body',

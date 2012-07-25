@@ -2,7 +2,7 @@
  * Model of the main canvas...
  */
 
-define(
+ define(
   [
   'backbone',
   'raphael',
@@ -36,4 +36,4 @@ define(
 
     return PaperModel;
   }
-);
+  );

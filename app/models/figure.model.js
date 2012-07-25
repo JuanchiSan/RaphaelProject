@@ -30,5 +30,5 @@ define([
 
     });
     return FigureModel;
-   }
-);
+  }
+  );

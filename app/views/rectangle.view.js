@@ -6,7 +6,7 @@ define(
     'jquery'
   ],
   function(_, Backbone, FigureView, $) {
-    "use strict";
+    'use strict';
     var RectangleView = FigureView.extend({
 
       events: {
@@ -19,7 +19,6 @@ define(
       initialize : function(obj, paper) {
         _.bindAll(this, 'render', 'generateGraphicElem', 'changeColor', 'notSelected', 'selectAndChangeColor');
         this.model.bind('change', this.render);
-
         this.paper = paper;
         this.render();
         this.model.set({'graphicElem': this.graphicElem});

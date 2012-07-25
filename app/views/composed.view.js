@@ -1,12 +1,12 @@
 define(
   [
-    'underscore',
-    'backbone',
-    'figureView',
-    'jquery'
+  'underscore',
+  'backbone',
+  'figureView',
+  'jquery'
   ],
   function(_, Backbone, FigureView, $) {
-    "use strict";
+    'use strict';
     var ComposedView = FigureView.extend({
 
       events: {
@@ -20,40 +20,40 @@ define(
        * Paper and circle atts shuld be defined on creation...
        */
 
-      views: [],
-      mySet: "",
+       views: [],
+       mySet: '',
 
-      dragOps: {
+       dragOps: {
         start: function () {
           this.mapModel.forEach( function(elem) {
-            elem.ox = elem.type === "rect" ? window.parseInt(elem.attr("x")) : window.parseInt(elem.attr("cx"));
-            elem.oy = elem.type === "rect" ? window.parseInt(elem.attr("y")) : window.parseInt(elem.attr("cy"));
-            elem.animate({"fill-opacity": '.5'}, 300);
+            elem.ox = elem.type === 'rect' ? window.parseInt(elem.attr('x')) : window.parseInt(elem.attr('cx'));
+            elem.oy = elem.type === 'rect' ? window.parseInt(elem.attr('y')) : window.parseInt(elem.attr('cy'));
+            elem.animate({'fill-opacity': '.5'}, 300);
           });
         },
 
         move: function (dx, dy) {
 
           this.mapModel.forEach( function(elem) {
-            console.log("------>");
-            var att = (elem.type === "rect") ?
-                         {x: elem.ox + dx, y: elem.oy + dy}
-                         : {cx: elem.ox + dx, cy: elem.oy + dy};
+            console.log('------>');
+            var att = (elem.type === 'rect') ?
+            {x: elem.ox + dx, y: elem.oy + dy}
+            : {cx: elem.ox + dx, cy: elem.oy + dy};
 
             // to keep track of the place where the figure is
             //  so in this way if figure move (by drag) backbone model of the figure update its position...
             elem.attr( att );
 
             // to keep updated the position in the backbone model asosiated with this Raphael element:
-            var mx = (elem.type === "rect")? att.x: att.cx;
-            var my = (elem.type === "rect")? att.y: att.cy;
+            var mx = (elem.type === 'rect')? att.x: att.cx;
+            var my = (elem.type === 'rect')? att.y: att.cy;
             this.mapModel.set({ x: mx, y: my});
           });
 
         },
 
         up: function () {
-          this.mapModel.animate({"fill-opacity": '1'}, 300);
+          this.mapModel.animate({'fill-opacity': '1'}, 300);
           this.mapModel.toFront();
         }
       },
@@ -73,7 +73,7 @@ define(
        * elems: esta compuesto por el modelo a insertar y su vista. Ambos de Backbone.
        *  elems: [{ model: <a_model>, view: <a_view> }, ...]
        */
-      addElement: function(elems) {
+       addElement: function(elems) {
         //console.log(elem.view);
         ///console.log(elem.view.graphicElem.mapModel);
         elems.forEach( function(elem){
@@ -104,29 +104,29 @@ define(
 
           // adding drag functionality:
           this.graphicElem.drag( this.dragOps.move, this.dragOps.start, this.dragOps.up );
-          this.graphicElem.attr({cursor: "move"});
+          this.graphicElem.attr({cursor: 'move'});
 
-          // El "el" de la vista se obtiene de la biblioteca raphael...
+          // El 'el' de la vista se obtiene de la biblioteca raphael...
           //this.el = this.graphicElem.node;
           //this.$el = $(this.graphicElem.node);
         }
         else {
           // some of its propieties are changed... so redraw it...
           this.graphicElem.attr({x: this.model.get('x'),
-                                 y: this.model.get('y'),
-                                 cx: this.model.get('x'),
-                                 cy: this.model.get('y')
-                               });
+           y: this.model.get('y'),
+           cx: this.model.get('x'),
+           cy: this.model.get('y')
+         });
         }
       },
 
       alertt: function() {
-        console.log("q lo pario");
+        console.log('q lo pario');
       }
 
 
     });
 
-    return ComposedView;
-  }
+return ComposedView;
+}
 );

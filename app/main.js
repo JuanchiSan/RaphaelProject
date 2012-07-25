@@ -1,7 +1,7 @@
 /**
  * RequireJS bootstrap
  */
-require.config({
+ require.config({
   paths: {
     //libreries
     backbone : '../libs/backbone/backbone.amd',
@@ -61,9 +61,9 @@ require.config({
 
 require(
   [
-    'app'
+  'app'
   ],
   function(app) {
     app.init();
   }
-);
+  );
