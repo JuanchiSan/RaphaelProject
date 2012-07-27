@@ -20,4 +20,4 @@ define([
     });
     return ComposedFigModel;
   }
-  );
+);

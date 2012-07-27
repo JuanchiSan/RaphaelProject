@@ -24,43 +24,36 @@ define(
         this.model.bind('change', this.render );
         this.paper = paper;
         this.render();
-
-        this.model.set({'graphicElem': this.graphicElem});
       },
 
       generateGraphicElem : function() {
-        var graphicElem = this.paper.circle( this.model.get('x'),
-         this.model.get('y'),
-         this.model.get('radious') );
+        var graphicElem = this.paper.circle( this.model.get('x'), this.model.get('y'), this.model.get('radius') );
 
         graphicElem.attr( {'fill': this.model.get('color'),
-         'stroke': this.model.get('stroke'),
-         'stroke-width': this.model.get('stroke-width')} );
+          'stroke': this.model.get('stroke'),
+          'stroke-width': this.model.get('stroke-width')
+        });
 
         return graphicElem;
       },
 
-
       /*
-       * redefne shake cause circle has no width and height
+       * redefine shake cause circle has no width and height
        */
-       shake: function() {
+      shake: function() {
         var mult = 1.4;//Math.random() * 3;
-        var oldRadius = this.model.get('radious');
+        var oldRadius = this.model.get('radius');
         var newRadius = oldRadius * mult;
 
         this.graphicElem.animate( { transform:'', opacity: 0.5, r: newRadius}, 80, '<',
           function() {
             this.animate( { transform:'', opacity: 1, r: oldRadius}, 80, 'elastic' );
           }
-          );
-        //this.model.set({'width': newHeight});
+        );
       }
-
-
 
     });
 
-return CircleView;
-}
+    return CircleView;
+  }
 );

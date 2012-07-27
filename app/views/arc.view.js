@@ -14,38 +14,12 @@ define(
       events: {
         'mouseover': 'over',
         'mouseout': 'out',
-        'dblclick': 'addBreak',
-        'click': 'select'
+        //'dblclick': 'addBreak',
+        'click': 'select',
+        'dblclick': 'erase'
       },
 
       dragOps: {
-        // start: function(mousex, mousey, event) {
-        //   //console.log({ getCenter: function(){return {x: event.offsetX, y: event.offsetY};} });
-        //   this.victim = this.mapModel.get('to');
-        //   var NewPoint = function(x, y){
-        //     return {
-        //       getCenter: function(){
-        //         return {x: x, y: y};
-        //       }
-        //     };
-        //   };
-
-        //   this.mapModel.set({'to': new NewPoint(event.offsetX, event.offsetY) });
-        //   //event.stopPropagation();
-        //   //this.mapModel.set({'to': 12});
-        //   //this.animate({'fill': 'red'}, 300);
-        // },
-
-        // move: function(dx, dy) {
-        //   var to = this.mapModel.get('to');
-        //   console.log(dx + ", " + dy);
-        //   this.mapModel.set({'to': { getCenter: function(){return {x: to.getCenter().x + dx, y: to.getCenter().y + dy};} } });
-        // },
-
-        // up: function() {
-        //   this.animate({'fill-opacity': '1'}, 300);
-        //   this.toBack();
-        // }
         start: function(x, y, event) {
           this.ox = this.type === 'rect' ? window.parseInt(this.attr('x')) : window.parseInt(this.attr('cx'));
           this.oy = this.type === 'rect' ? window.parseInt(this.attr('y')) : window.parseInt(this.attr('cy'));
@@ -58,7 +32,7 @@ define(
             };
           };
 
-          // keep rference to the oldest victim
+          // keep reference to the oldest victim
           this.victim = this.mapModel.get(this.movingSource);
 
           // just move the correct source
@@ -73,9 +47,7 @@ define(
         },
 
         move: function(dx, dy) {
-          var att = (this.type === 'rect') ?
-          {x: this.ox + dx, y: this.oy + dy}
-          : {cx: this.ox + dx, cy: this.oy + dy};
+          var att = (this.type === 'rect') ? {x: this.ox + dx, y: this.oy + dy} : {cx: this.ox + dx, cy: this.oy + dy};
           //var att = {'x': parseInt(this.attr('x')) + 2, 'y': parseInt(this.attr('y')) - 2 };
           this.attr(att);
 
@@ -111,10 +83,12 @@ define(
       },
 
       initialize : function(obj, paper) {
-        _.bindAll(this, 'render', 'addBreak', 'out', 'over', 'select');
-        this.model.get('from').bind('change', this.render );
-        this.model.get('to').bind('change', this.render );
-        this.model.bind('change', this.render );
+        _.bindAll(this, 'render', 'addBreak', 'out', 'over', 'select', 'newTo', 'newFrom', 'erase', 'rebindFrom', 'rebindTo', 'animNewConnection', 'showRemovingArc');
+        this.model.get('from').bind('change', this.newFrom);
+        this.model.get('to').bind('change', this.newTo);
+        this.model.bind('change:from', this.rebindFrom);
+        this.model.bind('change:to', this.rebindTo);
+        this.model.bind('destroy', this.erase);
 
         this.paper = paper;
         this.render();
@@ -128,13 +102,15 @@ define(
       /*
        * Makes the connection and renderizes it with Raphael...
        */
-       connection: function (obj1, obj2) {
+      connection: function (obj1, obj2) {
         // new path to folow:
         var myPath = 'm' + obj1.getCenter().x + ',' + obj1.getCenter().y +
         ' L' + obj2.getCenter().x + ',' + obj2.getCenter().y;
 
         if (this.graphicElem) {
           this.graphicElem.attr({path: myPath});
+          //this.graphicElem.animate({path: myPath}, 0, 'lineal');
+
           // var from_x = this.model.get('from').getCenter().x - this.model.get('from').get('radious');
           // var from_y = this.model.get('from').getCenter().y - this.model.get('from').get('radious');
           // this.fromIcon.attr({cx: from_x, cy: from_y});
@@ -150,41 +126,52 @@ define(
            * Generating a new path graphic element
            */
 
-           this.graphicElem = this.paper.path( myPath );
-           this.graphicElem.attr({'stroke-width': this.model.get('width'), stroke: this.model.get('color')});
-           this.graphicElem.toBack();
+          this.graphicElem = this.paper.path( myPath );
+          this.graphicElem.attr({'stroke-width': this.model.get('width'), stroke: this.model.get('color')});
+          this.graphicElem.toBack();
 
-           this.graphicElem.mapModel = this.model;
+          this.graphicElem.mapModel = this.model;
 
-           this.el = this.graphicElem.node;
-           this.$el = $(this.graphicElem.node);
+          this.el = this.graphicElem.node;
+          this.$el = $(this.graphicElem.node);
 
           /*
            * Adding two icons in the path sides to alow to drag each side of the path to a new shape
            */
-           var fromPoint_x = this.model.get('from').getCenter().x - this.model.get('from').get('radious');
-           var fromPoint_y = this.model.get('from').getCenter().y - this.model.get('from').get('radious');
-           this.fromIcon = this.paper.circle(fromPoint_x, fromPoint_y, 10);
-           this.fromIcon.attr({fill: 'red'});
-           this.fromIcon.mapModel = this.model;
-           this.fromIcon.paper = this.paper;
-          // The movingSource is used to draw the path without the victim.
-          this.fromIcon.movingSource = 'from';
-          this.fromIcon.drag(this.dragOps.move, this.dragOps.start, this.dragOps.up);
+          // var fromPoint_x = this.model.get('from').getCenter().x - this.model.get('from').get('radious');
+          // var fromPoint_y = this.model.get('from').getCenter().y - this.model.get('from').get('radious');
+          // this.fromIcon = this.paper.circle(fromPoint_x, fromPoint_y, 10);
+          // this.fromIcon.attr({fill: 'red'});
+          // this.fromIcon.mapModel = this.model;
+          // this.fromIcon.paper = this.paper;
+          // // The movingSource is used to draw the path without the victim.
+          // this.fromIcon.movingSource = 'from';
+          // this.fromIcon.drag(this.dragOps.move, this.dragOps.start, this.dragOps.up);
 
-          var toPoint_x = this.model.get('to').getCenter().x - this.model.get('to').get('radious');
-          var toPoint_y = this.model.get('to').getCenter().y - this.model.get('to').get('radious');
-          this.toIcon = this.paper.circle(toPoint_x, toPoint_y, 10);
-          this.toIcon.attr({fill: 'red'});
-          this.toIcon.mapModel = this.model;
-          this.toIcon.paper = this.paper;
-          // The movingSource is used to draw the path without the victim.
-          this.toIcon.movingSource = 'to';
-          this.toIcon.drag(this.dragOps.move, this.dragOps.start, this.dragOps.up);
+          // var toPoint_x = this.model.get('to').getCenter().x - this.model.get('to').get('radious');
+          // var toPoint_y = this.model.get('to').getCenter().y - this.model.get('to').get('radious');
+          // this.toIcon = this.paper.circle(toPoint_x, toPoint_y, 10);
+          // this.toIcon.attr({fill: 'red'});
+          // this.toIcon.mapModel = this.model;
+          // this.toIcon.paper = this.paper;
+          // // The movingSource is used to draw the path without the victim.
+          // this.toIcon.movingSource = 'to';
+          // this.toIcon.drag(this.dragOps.move, this.dragOps.start, this.dragOps.up);
 
-          // initialy the icons are not showed (only when selected)
-          this.hideIcons();
+          // // initialy the icons are not showed (only when selected)
+          // this.hideIcons();
         }
+      },
+
+      newTo: function() {
+        // if to have changed, it is needed to observe at the new model...
+        this.model.get('to').bind('change', this.render );
+        this.render();
+      },
+
+      newFrom: function() {
+        this.model.get('from').bind('change', this.render );
+        this.render();
       },
 
       over : function() {
@@ -215,13 +202,13 @@ define(
         if (!this.model.isSelected) {
           this.graphicElem.attr({'stroke': 'red', 'stroke-width': 4});
           this.model.isSelected = true;
-          this.showIcons();
+          // this.showIcons();
           //this.graphicElem.drag(this.dragOps.move, this.dragOps.start, this.dragOps.up);
         }
         else {
           this.graphicElem.attr({'stroke-width': this.model.get('width'), stroke: this.model.get('color')});
           this.model.isSelected = false;
-          this.hideIcons();
+          // this.hideIcons();
         }
       },
 
@@ -235,10 +222,61 @@ define(
       hideIcons: function() {
         this.fromIcon.animate({'opacity': 0}, 600, this.fromIcon.hide() );
         this.toIcon.animate({'opacity': 0}, 300, this.toIcon.hide() );
+      },
+
+      /*
+       * To delet this view and its Raphael element.
+       */
+      erase: function() {
+        this.graphicElem.remove(); // remove from DOM.
+        //this.showRemovingArc();
+        var myPath = 'm' + this.model.get('from').getCenter().x + ',' + this.model.get('from').getCenter().y;
+
+        this.graphicElem.animate({path: myPath, stroke: 'red'}, 300, 'bounce',
+          function() {
+            this.animate({stroke: 'gray'});
+            this.remove();
+          }, this
+        );
+      },
+
+      showRemovingArc: function() {
+        var myPath = 'm' + this.model.get('from').getCenter().x + ',' + this.model.get('from').getCenter().y;
+
+        this.graphicElem.animate({path: myPath, stroke: 'red'}, 300, 'bounce',
+          function() {
+            this.animate({stroke: 'gray'});
+          }
+        );
+      },
+
+      // the arc has changed the 'from' element, so it is needed a rebind
+      rebindFrom: function() {
+        this.model.get('from').bind('change', this.newFrom);
+        this.animNewConnection(this.model.get('from'), this.model.get('to'));
+      },
+      // the arc has changed the 'to' element, so it is needed a rebind
+      rebindTo: function() {
+        this.model.get('to').bind('change', this.newTo);
+        this.animNewConnection(this.model.get('from'), this.model.get('to'));
+      },
+
+      animNewConnection: function (obj1, obj2) {
+        this.graphicElem.attr({path: 'm' + obj1.getCenter().x + ',' + obj1.getCenter().y});
+
+        // new path to folow:
+        var myPath = 'm' + obj1.getCenter().x + ',' + obj1.getCenter().y +
+        ' L' + obj2.getCenter().x + ',' + obj2.getCenter().y;
+
+        this.graphicElem.animate({path: myPath, stroke: '#29F900', 'stroke-width':6}, 400, '<',
+          function() {
+            this.animate({stroke: 'gray', 'stroke-width':4});
+          }
+        );
       }
 
     });
 
-return ArcView;
-}
+    return ArcView;
+  }
 );

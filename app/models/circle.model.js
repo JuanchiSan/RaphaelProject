@@ -7,7 +7,7 @@ define([
     var CircleModel = FigureModel.extend({
 
       moredefaults: {
-        radious: Config.radious
+        radious: Config.radius
       },
 
       initialize: function() {
@@ -17,4 +17,4 @@ define([
     });
     return CircleModel;
   }
-  );
+);

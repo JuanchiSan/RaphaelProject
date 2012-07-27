@@ -10,10 +10,10 @@ define(
     var RectangleView = FigureView.extend({
 
       events: {
-        'mousedown': 'select',
+        'mouseover': 'select',
         'mouseout': 'select',
-        'mouseup': 'shake',
-        'mouseover': 'selectAndChangeColor'
+        'mouseup': 'shake'
+        //'mouseover': 'selectAndChangeColor'
       },
 
       initialize : function(obj, paper) {

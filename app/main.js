@@ -35,6 +35,7 @@
     rectangleView : 'views/rectangle.view',
     arcView : 'views/arc.view',
     composedView : 'views/composed.view',
+    arcBuilderView : 'views/arcbuilder.view',
 
     //config file:
     config: 'config/config'

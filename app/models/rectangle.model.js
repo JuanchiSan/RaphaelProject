@@ -11,11 +11,11 @@ define([
       },
 
       initialize: function() {
-        //this.set(this.defaults);
+        //this.set(this.moredefaults);
       },
 
       /*
-       * Reimplementing getCenter function (x and y are the left up corner)
+       * Reimplementing getCenter function (x and y are the left superior corner)
        */
        getCenter: function() {
         return {
@@ -27,4 +27,4 @@ define([
     });
     return RectangleModel;
   }
-  );
+);
