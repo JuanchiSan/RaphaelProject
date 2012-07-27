@@ -19,6 +19,9 @@ define(
         'dblclick': 'erase'
       },
 
+      //arrowStr: "M150.6,102.5 L170.6,92.5 L163.06,102.5 L170.6,112.5 L150.6,102.5",
+      arrowStr: 'M21.871,9.814 15.684,16.001 21.871,22.188 18.335,25.725 8.612,16.001 18.335,6.276z',
+
       dragOps: {
         start: function(x, y, event) {
           this.ox = this.type === 'rect' ? window.parseInt(this.attr('x')) : window.parseInt(this.attr('cx'));
@@ -130,6 +133,16 @@ define(
           this.graphicElem.attr({'stroke-width': this.model.get('width'), stroke: this.model.get('color')});
           this.graphicElem.toBack();
 
+          this.arrow = this.paper.path(this.arrowStr);
+          this.arrow.attr({stroke: 'none', fill: 'gray'});
+          //this.arrow.transform('t 21.871,9.814');
+          //var angle = this.paper.raphael.angle(this.model.get('from').x, this.model.get('from').y, this.model.get('to').x, this.model.get('to').y);
+          //console.log('angle: ' + angle);
+
+          // getting the middle of the arc:
+          // var arrowPos2 = this.graphicElem.getPointAtLength(this.graphicElem.getTotalLength() / 2 );
+          // this.arrow.transform('T ' + arrowPos2.x + ',' + arrowPos2.y + ' R ' + (arrowPos2.alpha-180));
+
           this.graphicElem.mapModel = this.model;
 
           this.el = this.graphicElem.node;
@@ -161,6 +174,9 @@ define(
           // // initialy the icons are not showed (only when selected)
           // this.hideIcons();
         }
+
+        var arrowPos = this.graphicElem.getPointAtLength(this.graphicElem.getTotalLength() / 2 );
+        this.arrow.transform('T ' + (window.parseInt(arrowPos.x) - 15) + ',' + (window.parseInt(arrowPos.y) - 16) + ' r ' + (arrowPos.alpha - 180));
       },
 
       newTo: function() {
@@ -229,6 +245,7 @@ define(
        */
       erase: function() {
         this.graphicElem.remove(); // remove from DOM.
+        this.arrow.remove();
         //this.showRemovingArc();
         var myPath = 'm' + this.model.get('from').getCenter().x + ',' + this.model.get('from').getCenter().y;
 

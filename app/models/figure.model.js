@@ -17,6 +17,14 @@ define([
         // Actualy it's an Abstract Method.
         // RE-IMPLEMENT as necesary in particular models...
         return {x: this.get('x'), y: this.get('y')};
+      },
+
+      getSizeX: function() {
+        // abstract! shuld return the horizontal size.
+      },
+
+      getSizeY: function() {
+        // abstract! shuld return the vertical size.
       }
     });
 

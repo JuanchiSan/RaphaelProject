@@ -7,11 +7,19 @@ define([
     var CircleModel = FigureModel.extend({
 
       moredefaults: {
-        radious: Config.radius
+        radius: Config.radius
       },
 
       initialize: function() {
         //this.set(this.moredefaults);
+      },
+
+      getSizeX: function() {
+        return this.radius * 2;
+      },
+
+      getSizeY: function() {
+        return this.radius * 2;
       }
 
     });

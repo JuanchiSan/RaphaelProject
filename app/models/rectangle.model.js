@@ -22,6 +22,14 @@ define([
           x: (window.parseInt(this.get('x')) + window.parseInt(this.get('width')) / 2),
           y: (window.parseInt(this.get('y')) + window.parseInt(this.get('height')) / 2)
         };
+      },
+
+      getSizeX: function() {
+        return this.width;
+      },
+
+      getSizeY: function() {
+        return this.height;
       }
 
     });
